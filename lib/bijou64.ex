@@ -49,7 +49,7 @@ defmodule Bijou64 do
   Decodes valid u64 integers according to the bujou64 format from the start of a binary.
   """
   @spec decode(binary()) :: {u64(), binary()}
-  def decode(<<int::8, rest::binary>>) when int in 0..(0xF8 - 1)//1 do
+  def decode(<<int::8, rest::binary>>) when int in 0..@max_first_tier//1 do
     {int, rest}
   end
 
