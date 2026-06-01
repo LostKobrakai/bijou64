@@ -25,8 +25,8 @@ defmodule Bijou64.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:benchee, "~> 1.0", only: :dev},
-      {:varint, "~> 1.0", only: :dev},
+      {:benchee, "~> 1.0", only: [:dev, :test]},
+      {:varint, "~> 1.0", only: [:dev, :test]},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false, warn_if_outdated: true},
       {:stream_data, "~> 1.0", only: [:dev, :test], runtime: false}
     ]

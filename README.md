@@ -36,12 +36,12 @@ Varint: encode       131.07 K - 2.42x slower +4.47 μs
 ```
 ##### With input random_500 #####
 Name                      ips        average  deviation         median         99th %
-Bijou64: decode       84.38 K       11.85 μs    ±16.10%       11.54 μs       16.04 μs
-Varint: decode        76.14 K       13.13 μs    ±17.39%       12.96 μs       20.29 μs
+Bijou64: decode      124.69 K        8.02 μs    ±53.10%        7.79 μs       10.71 μs
+Varint: decode        96.55 K       10.36 μs    ±10.67%       10.21 μs       13.96 μs
 
 Comparison:
-Bijou64: decode       84.38 K
-Varint: decode        76.14 K - 1.11x slower +1.28 μs
+Bijou64: decode      124.69 K
+Varint: decode        96.55 K - 1.29x slower +2.34 μs
 ```
 
 ## Installation

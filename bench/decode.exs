@@ -4,9 +4,7 @@ Benchee.run(
   %{
     "Varint: decode" => {
       fn list ->
-        Enum.all?(list, fn binary ->
-          match?({_, ""}, Varint.LEB128.decode(binary))
-        end)
+        Enum.each(list, fn binary -> Varint.LEB128.decode(binary) end)
       end,
       before_scenario: fn input ->
         Enum.map(input, fn int -> Varint.LEB128.encode(int) end)
@@ -14,9 +12,7 @@ Benchee.run(
     },
     "Bijou64: decode" => {
       fn list ->
-        Enum.all?(list, fn binary ->
-          match?({_, ""}, Bijou64.decode(binary))
-        end)
+        Enum.each(list, fn binary -> Bijou64.decode(binary) end)
       end,
       before_scenario: fn input ->
         Enum.map(input, fn int -> Bijou64.encode(int) end)
