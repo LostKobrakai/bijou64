@@ -4,7 +4,7 @@ defmodule Bijou64.MixProject do
   def project do
     [
       app: :bijou64,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -25,6 +25,8 @@ defmodule Bijou64.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:benchee, "~> 1.0", only: :dev},
+      {:varint, "~> 1.0", only: :dev},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false, warn_if_outdated: true},
       {:stream_data, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
