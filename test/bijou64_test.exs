@@ -6,9 +6,15 @@ defmodule Bijou64Test do
   doctest Bijou64
 
   property "symmetric" do
-    check all int <- integer(0..(1 <<< 64)) do
+    check all int <- integer_generator() do
       assert int |> Bijou64.encode() |> Bijou64.decode() == {int, ""}
     end
+
+    largest = 2 ** 64 - 1
+    assert largest |> Bijou64.encode() |> Bijou64.decode() == {largest, ""}
+
+    smallest = 0
+    assert smallest |> Bijou64.encode() |> Bijou64.decode() == {smallest, ""}
   end
 
   describe "encode/1" do
@@ -47,5 +53,34 @@ defmodule Bijou64Test do
         end
       end
     end
+  end
+
+  # Focus on edges between tiers, but leave all values possible
+  defp integer_generator() do
+    gen all {tier_min, tier_max} <- member_of(tiers()),
+            integer <-
+              one_of([
+                constant(tier_min),
+                constant(tier_max),
+                integer(tier_min..tier_max)
+              ]) do
+      integer
+    end
+  end
+
+  defp tiers do
+    [
+      0,
+      0xF8,
+      0x01F8,
+      0x0101F8,
+      0x010101F8,
+      0x01010101F8,
+      0x0101010101F8,
+      0x010101010101F8,
+      0x01010101010101F8
+    ]
+    |> Enum.chunk_every(2, 1, [2 ** 64])
+    |> Enum.map(fn [a, b] -> {a, b - 1} end)
   end
 end

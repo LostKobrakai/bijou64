@@ -7,8 +7,6 @@ defmodule Bijou64 do
 
   See https://www.inkandswitch.com/tangents/bijou64/
   """
-  @max 0xFFFF_FFFF_FFFF_FFFF
-
   @tier_offsets [
     0xF8,
     0x01F8,
@@ -20,6 +18,8 @@ defmodule Bijou64 do
     0x01010101010101F8
   ]
 
+  @max_first_tier Enum.at(@tier_offsets, 0) - 1
+
   @typedoc """
   Valid integers are unsigned integers up to 64 bits.
   """
@@ -29,17 +29,17 @@ defmodule Bijou64 do
   Encodes valid u64 integers according to the bujou64 format.
   """
   @spec encode(u64()) :: binary()
-  def encode(int) when int in 0..(0xF8 - 1)//1 do
+  def encode(int) when int in 0..@max_first_tier//1 do
     <<int::8>>
   end
 
   for {[offset, next], bytes} <-
         @tier_offsets
-        |> Enum.chunk_every(2, 1, [@max + 1])
+        |> Enum.chunk_every(2, 1, [2 ** 64])
         |> Enum.with_index(1) do
     def encode(int) when int in unquote(offset)..unquote(next - 1)//1 do
       <<
-        unquote(0xF8 + bytes - 1)::8,
+        unquote(@max_first_tier + bytes)::8,
         int - unquote(offset)::integer-size(unquote(bytes))-unit(8)
       >>
     end
@@ -49,13 +49,13 @@ defmodule Bijou64 do
   Decodes valid u64 integers according to the bujou64 format from the start of a binary.
   """
   @spec decode(binary()) :: {u64(), binary()}
-  def decode(<<int::8, rest::binary>>) when int in 0..248//1 do
+  def decode(<<int::8, rest::binary>>) when int in 0..(0xF8 - 1)//1 do
     {int, rest}
   end
 
   for {offset, bytes} <- Enum.with_index(@tier_offsets, 1) do
     def decode(<<
-          unquote(0xF8 + bytes - 1)::8,
+          unquote(@max_first_tier + bytes)::8,
           num::integer-size(unquote(bytes))-unit(8),
           rest::binary
         >>) do
@@ -63,6 +63,6 @@ defmodule Bijou64 do
     end
   end
 
-  defp do_decode(total, 8) when total < @max, do: total
+  defp do_decode(total, 8) when total < unquote(2 ** 64), do: total
   defp do_decode(total, bytes) when bytes < 8, do: total
 end
