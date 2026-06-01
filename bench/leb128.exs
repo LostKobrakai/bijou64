@@ -2,6 +2,18 @@
 
 Benchee.run(
   %{
+    "Varint: encode" => fn list ->
+      Enum.each(list, fn int -> Varint.LEB128.encode(int) end)
+    end,
+    "Bijou64: encode" => fn list ->
+      Enum.each(list, fn int -> Bijou64.encode(int) end)
+    end
+  },
+  inputs: %{random_500: list}
+)
+
+Benchee.run(
+  %{
     "Varint: decode" => {
       fn list ->
         Enum.each(list, fn binary -> Varint.LEB128.decode(binary) end)

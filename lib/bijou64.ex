@@ -26,7 +26,20 @@ defmodule Bijou64 do
   @type u64 :: 0..0xFFFF_FFFF_FFFF_FFFF
 
   @doc """
-  Encodes valid u64 integers according to the bujou64 format.
+  Encodes valid u64 integers according to the bijou64 format.
+
+      iex> Bijou64.encode(0)
+      <<0>>
+
+      iex> Bijou64.encode(247)
+      <<247>>
+
+      iex> Bijou64.encode(248)
+      <<248, 0>>
+
+      iex> Bijou64.encode(2 ** 64 - 1)
+      <<255, 254, 254, 254, 254, 254, 254, 254, 7>>
+
   """
   @spec encode(u64()) :: binary()
   def encode(int) when int in 0..@max_first_tier//1 do
@@ -46,7 +59,20 @@ defmodule Bijou64 do
   end
 
   @doc """
-  Decodes valid u64 integers according to the bujou64 format from the start of a binary.
+  Decodes valid u64 integers according to the bijou64 format from the start of a binary.
+
+      iex> Bijou64.decode(<<0>>)
+      {0, ""}
+
+      iex> Bijou64.decode(<<247>>)
+      {247, ""}
+
+      iex> Bijou64.decode(<<248, 0>>)
+      {248, ""}
+
+      iex> Bijou64.decode(<<255, 254, 254, 254, 254, 254, 254, 254, 7>>)
+      {18446744073709551615, ""}
+
   """
   @spec decode(binary()) :: {u64(), binary()}
   def decode(<<int::8, rest::binary>>) when int in 0..@max_first_tier//1 do
